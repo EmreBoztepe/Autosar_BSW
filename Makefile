@@ -60,7 +60,7 @@ Core/Src/system_stm32f4xx.c
 ASM_SOURCES =  \
 startup_stm32f407xx.s
 
-GCC_PATH = C:/Users/Emre/Desktop/proje/deneme44/external_lib/bin
+GCC_PATH = .\external_lib\bin
 
 #######################################
 # binaries
@@ -69,10 +69,10 @@ PREFIX = arm-none-eabi-
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
 ifdef GCC_PATH
-CC = $(GCC_PATH)/$(PREFIX)gcc
-AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
-CP = $(GCC_PATH)/$(PREFIX)objcopy
-SZ = $(GCC_PATH)/$(PREFIX)size
+CC = $(GCC_PATH)\$(PREFIX)gcc
+AS = $(GCC_PATH)\$(PREFIX)gcc -x assembler-with-cpp
+CP = $(GCC_PATH)\$(PREFIX)objcopy
+SZ = $(GCC_PATH)\$(PREFIX)size
 else
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc -x assembler-with-cpp
@@ -181,8 +181,14 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-del $(BUILD_DIR)
-  
+	-del .\$(BUILD_DIR)\*.o
+	-del .\$(BUILD_DIR)\*.d
+	-del .\$(BUILD_DIR)\*.elf
+	-del .\$(BUILD_DIR)\*.hex
+	-del .\$(BUILD_DIR)\*.lst
+	-del .\$(BUILD_DIR)\*.map
+	-del .\$(BUILD_DIR)\*.bin
+
 #######################################
 # dependencies
 #######################################
