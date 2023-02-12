@@ -1,43 +1,79 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="0.476687337">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="0.476687337" moduleId="org.eclipse.cdt.core.settings" name="Default">
+		<cconfiguration id="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base.181186024">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base.181186024" moduleId="org.eclipse.cdt.core.settings" name="Default">
 				<externalSettings/>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration buildProperties="" description="" id="0.476687337" name="Default" parent="org.eclipse.cdt.build.core.prefbase.cfg">
-					<folderInfo id="0.476687337." name="/" resourcePath="">
-						<toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.260590578" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
-							<targetPlatform id="org.eclipse.cdt.build.core.prefbase.toolchain.260590578.1588303124" name=""/>
-							<builder id="org.eclipse.cdt.build.core.settings.default.builder.898842120" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
-							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.74470558" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
-							<tool id="org.eclipse.cdt.build.core.settings.holder.50024602" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.560552120" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
+				<configuration artifactName="${ProjName}" buildProperties="" description="" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base.181186024" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base.181186024.1633454445" name="/" resourcePath="">
+						<toolChain id="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base.39590724" name="MCU ARM GCC" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.toolchain.base">
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.319663170" name="Toolchain" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.option.internal.toolchain.type.172269592" name="Internal Toolchain Type" superClass="com.st.stm32cube.ide.mcu.option.internal.toolchain.type" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.option.internal.toolchain.default.269739183" name="Internal Toolchain Default" superClass="com.st.stm32cube.ide.mcu.option.internal.toolchain.default" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.option.internal.toolchain.version.535722789" name="Internal Toolchain Version" superClass="com.st.stm32cube.ide.mcu.option.internal.toolchain.version" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1478751429" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain_prefix.339580319" name="Prefix" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain_prefix" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain_path.1944928549" name="Path" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain_path" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_mcu.201901564" name="MCU" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_mcu" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid.1488473644" name="CPU" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid.2072596153" name="Core" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.1212317464" name="Board" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.fpu.1704151383" name="Floating-point unit" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.fpu" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.floatabi.248324126" name="Floating-point ABI" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.floatabi" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.instructionset.2122822031" name="Instruction set" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.instructionset" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_c.572493569" name="Runtime library" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_c" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_cpp.1643194002" name="Runtime library" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_cpp" useByScannerDiscovery="true"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoprintffloat.1753449575" name="Use float with printf from newlib-nano (-u _printf_float)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoprintffloat" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoscanffloat.2136477420" name="Use float with scanf from newlib-nano (-u _scanf_float)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoscanffloat" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertbinary.676296067" name="Convert to binary file (-O binary)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertbinary" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.converthex.73226727" name="Convert to Intel Hex file (-O ihex)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.converthex" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertsrec.2003107318" name="Convert to Motorola S-record file (-O srec)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertsrec" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertverilog.1527053752" name="Convert to Verilog file (-O verilog)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertverilog" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertsymbolsrec.221496369" name="Convert to Motorola S-record (symbols) file (-O symbolsrec)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertsymbolsrec" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.showsize.440871223" name="Show size information about built artifact" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.showsize" useByScannerDiscovery="false"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.listfile.406359031" name="Generate list file" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.listfile" useByScannerDiscovery="false"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform.104500507" isAbstract="false" osList="all" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform"/>
+							<builder id="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder.1757875874" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.656586350" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler">
+								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.input.1448927933" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.input"/>
 							</tool>
-							<tool id="org.eclipse.cdt.build.core.settings.holder.1365246067" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1448610978" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1198325174" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler">
+								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1413948834" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
-							<tool id="org.eclipse.cdt.build.core.settings.holder.622136302" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1607875007" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.1190126221" name="MCU G++ Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler">
+								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp.251413132" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp"/>
 							</tool>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.1025494900" name="MCU GCC Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.linker.982658797" name="MCU G++ Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.linker">
+								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.linker.input.241631448" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.archiver.2111052141" name="MCU GCC Archiver" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.archiver"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.size.177391832" name="MCU Size" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.size"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objdump.listfile.196341401" name="MCU Output Converter list file" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objdump.listfile"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.hex.1413255581" name="MCU Output Converter Hex" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.hex"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.binary.1100039405" name="MCU Output Converter Binary" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.binary"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.verilog.468895708" name="MCU Output Converter Verilog" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.verilog"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.srec.1945706523" name="MCU Output Converter Motorola S-rec" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.srec"/>
+							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.2083110835" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
-	</storageModule>
-	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="Autosar_BSW.null.1130690452" name="Autosar_BSW"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
@@ -51,7 +87,14 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="Autosar_BSW.null.878185408" name="Autosar_BSW"/>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Default">
+			<resource resourceType="PROJECT" workspacePath="/Autosar_BSW"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
