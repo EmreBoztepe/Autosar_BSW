@@ -41,11 +41,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+void Delay (uint32_t time );
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-static void MX_GPIO_Init(void);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -54,7 +54,10 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+void Delay_Dumy (uint32_t time )
+{
+	while(time--); // 8cycle
+}
 /**
   * @brief  The application entry point.
   * @retval int
@@ -96,7 +99,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+	  Delay_Dumy(21000000);
+	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
   }
   /* USER CODE END 3 */
 }
@@ -104,25 +108,7 @@ int main(void)
 
 
 /* USER CODE BEGIN 4 */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
-  //__HAL_RCC_GPIOH_CLK_ENABLE();
-  //__HAL_RCC_GPIOD_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PD13 PD14 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-}
 /* USER CODE END 4 */
 
 /**
