@@ -86,7 +86,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-  Mcu_init();
+  Mcu_init(&McuConfig);
   Port_Init();
   //MX_GPIO_Init();
 

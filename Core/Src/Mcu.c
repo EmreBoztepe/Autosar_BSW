@@ -2,63 +2,61 @@
 
 #include "Mcu.h"
 
+/*
+* 	Main PLL = N * (source_clock / M) / P
+*  	HSE = 8 Mhz
+*	fCLK =   N * (8Mhz / M) / P
+*/
+ Mcu_ClockSettingConfigType Mcu_ClockSettingConfigData[] =
+{
+  {
+    .McuClockReferencePointFrequency = 168000000UL, /* 168Mhz */
+    .PllM    = 8,
+    .PllQ    = 7,
+    .PllP    = 2,
+	.PllN	 = 336
+  },
 
+  {
+	.McuClockReferencePointFrequency = 84000000UL,	/* 84Mhz */
+	.PllM    = 8,
+	.PllQ    = 7,
+	.PllP    = 4,
+	.PllN	 = 336
+  }
+};
 
+Mcu_ConfigType McuConfig =
+{
+	.clockConfig = Mcu_ClockSettingConfigData,
+	.clockSource = HSE_SOURCE
+};
 
-// Main PLL = N * (source_clock / M) / P
-// HSE = 8 Mhz
-// fCLK =   N * (8Mhz / M) / P
-#define PLL_M   8
-#define PLL_Q   7
-#define PLL_P   2
-
-
-/* stm32f407 runs at 168Mhz max */
-
-#define PLL_N   336
-
-
-void Mcu_init(void)
+void Mcu_init(Mcu_ConfigType *configPtr)
 {
 
 	uint32_t tempReg = 0;
-	/*
-	//RCC->PLLCFGR &= tempReg;
 
-	tempReg = RCC_PLLCFGR_PLLM_3;	//8; // PLLM = 8
-	RCC->PLLCFGR &= tempReg;
+	if( configPtr->clockSource == HSE_SOURCE)
+	{
+		RCC->CR |= RCC_CR_HSEON;	/* Enable HSE (CR: bit 16) */
+		while(!(RCC->CR & RCC_CR_HSERDY ));	/* Wait till HSE is ready (CR: bit 17) */
+	}
 
-	tempReg = RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_8;
-	RCC->PLLCFGR |= tempReg;
 
-	tempReg = RCC_PLLCFGR_PLLP_1;
-	RCC->PLLCFGR |= tempReg;
-
-	tempReg = RCC_CR_HSEON;
-	RCC->CR |= tempReg;
-
-	tempReg = RCC_CR_PLLON;
-	RCC->CR |= tempReg;
-
-	tempReg = 0x02;
-	RCC->CFGR |= tempReg;
-
-	tempReg = RCC_AHB1ENR_GPIODEN;
-	RCC->AHB1ENR |= tempReg; */
-
-	/* Enable HSE (CR: bit 16) */
-	RCC->CR |= (1U << 16);
-	/* Wait till HSE is ready (CR: bit 17) */
-	while(!(RCC->CR & (1 << 17)));
 
 	/* Enable power interface clock (APB1ENR:bit 28) */			///olmasada olur
 	RCC->APB1ENR |= (1 << 28);
 
-	/* set voltage scale to 1 for max frequency (PWR_CR:bit 14)
-	 * (0b0) scale 2 for fCLK <= 144 Mhz
-	 * (0b1) scale 1 for 144 Mhz < fCLK <= 168 Mhz
-	 */
-	PWR->CR |= (1 << 14);
+	if(configPtr->clockConfig->McuClockReferencePointFrequency > 144000000)
+	{
+		/* set voltage scale to 1 for max frequency (PWR_CR:bit 14)
+		 * (0b0) scale 2 for fCLK <= 144 Mhz
+		 * (0b1) scale 1 for 144 Mhz < fCLK <= 168 Mhz
+		 */
+		PWR->CR |= (1 << 14);
+	}
+
 
 	/* set AHB prescaler to /1 (CFGR:bits 7:4) */
 	RCC->CFGR |= (0 << 4);
@@ -71,8 +69,10 @@ void Mcu_init(void)
 	 * PLLCFGR: bits 5:0 (M), 14:6 (N), 17:16 (P), 27:24 (Q)
 	 * Set PLL source to HSE, PLLCFGR: bit 22, 1:HSE, 0:HSI
 	 */
-	RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
-	               (PLL_Q << 24) | (1 << 22);
+	RCC->PLLCFGR = configPtr->clockConfig->PllM |
+				   (configPtr->clockConfig->PllN << 6) |
+				   (((configPtr->clockConfig->PllP >> 1) -1) << 16) |
+	               (configPtr->clockConfig->PllQ << 24) | (1 << 22);
 	/* Enable the main PLL (CR: bit 24) */
 	RCC->CR |= (1 << 24);
 	/* Wait till the main PLL is ready (CR: bit 25) */
