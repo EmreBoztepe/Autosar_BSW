@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "deneme.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -101,6 +101,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  Delay_Dumy(21000000);
 	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+
+      void* myCar = araba_create(100); // C++ sınıfını oluştur
+      araba_setBit(myCar, 25);         // Metod çağır
+      araba_destroy(myCar);            // Nesneyi yok et
   }
   /* USER CODE END 3 */
 }
