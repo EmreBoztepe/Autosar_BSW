@@ -97,14 +97,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	    araba myCar(100);  // Sýnýfýn bir örneðini oluþtur
+	    myCar.setBit(25);  // Sýnýf metodunu çaðýr
 
     /* USER CODE BEGIN 3 */
 	  Delay_Dumy(21000000);
 	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-
-      void* myCar = araba_create(100); // C++ sÄ±nÄ±fÄ±nÄ± oluÅŸtur
-      araba_setBit(myCar, 25);         // Metod Ã§aÄŸÄ±r
-      araba_destroy(myCar);            // Nesneyi yok et
   }
   /* USER CODE END 3 */
 }

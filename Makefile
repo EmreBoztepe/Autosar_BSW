@@ -36,7 +36,6 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-Core/Src/main.c \
 Core/Src/Mcu.c \
 Core/Src/Port.c \
 Core/Src/stm32f4xx_it.c \
@@ -64,6 +63,7 @@ startup_stm32f407xx.s
 
 # C++ sources
 CPP_SOURCES = \
+Core/Src/main.cpp \
 Core/Src/deneme.cpp
 
 GCC_PATH = .\external_lib\bin
@@ -114,6 +114,10 @@ C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F407xx
 
+# C defines
+CPP_DEFS =  \
+-DUSE_HAL_DRIVER \
+-DSTM32F407xx
 
 # AS includes
 AS_INCLUDES = 
@@ -127,14 +131,18 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include
 
 CPP_INCLUDES = \
--ICore/Inc
+-ICore/Inc \
+-IDrivers/STM32F4xx_HAL_Driver/Inc \
+-IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
+-IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
+-IDrivers/CMSIS/Include
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CXXFLAGS = $(MCU) -Wall
+CXXFLAGS = $(MCU) $(CPP_DEFS) -Wall -g -std=c++17 -ffunction-sections -fdata-sections $(CPP_INCLUDES)
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
