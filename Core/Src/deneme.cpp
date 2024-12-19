@@ -1,8 +1,22 @@
 #include "deneme.h"
 
-araba::araba(int kmVal) : km(kmVal) {}
+// EepromSTM metod tanımları
 
-void araba::setBit(char newAge) {
-    age = newAge;
+EepromSTM::EepromSTM() { /* Donanım başlatma kodu */ }
+
+EepromSTM::~EepromSTM() { /* Kaynak temizleme işlemleri */ }
+
+bool EepromSTM::erase() {
+    // STM için EEPROM silme işlemi
+    return true;
 }
 
+bool EepromSTM::write(EeAddr addr, const void* buf, size_t len) {
+    // STM için yazma işlemi
+    return true;
+}
+
+bool EepromSTM::read(EeAddr addr, void* buf, size_t len) {
+    // STM için okuma işlemi
+    return true;
+}

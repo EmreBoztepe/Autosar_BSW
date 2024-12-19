@@ -65,7 +65,8 @@ void Delay_Dumy (uint32_t time )
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	EepromSTM eeprom;
+	int emre = 4;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -97,12 +98,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	    araba myCar(100);  // Sýnýfýn bir örneðini oluþtur
-	    myCar.setBit(25);  // Sýnýf metodunu çaðýr
-
+	  eeprom.read(0x20, emre);
+	  eeprom.write(0x20, emre);
     /* USER CODE BEGIN 3 */
-	  Delay_Dumy(21000000);
-	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
   }
   /* USER CODE END 3 */
 }
