@@ -8,7 +8,15 @@ const EepromMapEntry EepromSTM::eepromMap[] = {
 };
 
 // EepromSTM Constructor & Destructor
-EepromSTM::EepromSTM() { /* Donanım başlatma kodu */ }
+EepromSTM::EepromSTM() { 
+    
+    //RDID komutu
+    uint8_t buff[4] = {0x83, 0x00, 0x00, 0x00};
+
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_Transmit(&hspi1, buff, 4, 1000);
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+}
 EepromSTM::~EepromSTM() { /* Kaynak temizleme işlemleri */ }
 
 // EEPROM İşlemleri
@@ -17,13 +25,38 @@ bool EepromSTM::erase() {
     return true;
 }
 
-bool EepromSTM::write(EeAddr addr, const void* buf, size_t len) {
-    // EEPROM yazma işlemi
-    return true;
+void EepromSTM::writeInstruction(void){
+    
+//uint8_t buff = 0x06;
+//
+//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+//HAL_SPI_Transmit(&hspi1, &buff, 1, 1000);
+//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+
+    uint8_t buff[5] = {0x83, 0x00, 0x00, 0x00};
+
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_Transmit(&hspi1, buff, 5, 1000);
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
 }
 
+bool EepromSTM::write(EeAddr addr, const void* buf, size_t len) {
+    
+    writeInstruction();
+
+    uint8_t buff2[5] = {0x02, 0x00, 0x00, 0x00, 0xAA};
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_Transmit(&hspi1, buff2, 5, 1000);
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+
+    return true;
+}
+uint8_t rxData[5];
 bool EepromSTM::read(EeAddr addr, void* buf, size_t len) {
-    // EEPROM okuma işlemi
+    uint8_t buff2[5] = {0x03, 0x00,0x00,0x00,0xff};
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(&hspi1, buff2, rxData, 5, 1000);
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
     return true;
 }
 

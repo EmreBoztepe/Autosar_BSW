@@ -20,6 +20,7 @@
 #include "main.h"
 #include "spi.h"
 #include "gpio.h"
+#include "deneme.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -71,12 +72,21 @@ int main(void)
   SystemClock_Config();
   MX_GPIO_Init();
   MX_SPI1_Init();
+  HAL_Delay(100);
+  EepromSTM eeprom;
+  HAL_Delay(100);
   uint8_t tempArray[2] = {0x55, 0xAA};
   while (1)
   {
-    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&hspi1, tempArray, 2, 1000);
-    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+    
+
+    eeprom.write(0x0000, tempArray);
+
+    HAL_Delay(10);
+
+    eeprom.read(0x0000, tempArray);
+
+    HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }

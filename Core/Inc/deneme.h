@@ -2,7 +2,7 @@
 #define DENEME_H
 
 #include <stddef.h>
-
+#include "spi.h"
 // EEPROM kimlikleri
 enum EepromRegion {
     REGION_CALIBRATION,
@@ -57,6 +57,7 @@ public:
 
 private:
     static const EepromMapEntry eepromMap[]; // EEPROM Haritası
+    void writeInstruction(void);
 };
 
 #endif
