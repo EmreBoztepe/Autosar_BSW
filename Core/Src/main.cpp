@@ -68,25 +68,32 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+  bool eepromStatus = false;
   HAL_Init();
   SystemClock_Config();
   MX_GPIO_Init();
   MX_SPI1_Init();
-  HAL_Delay(100);
-  EepromSTM eeprom;
-  HAL_Delay(100);
-  uint8_t tempArray[2] = {0x55, 0xAA};
+
+  uint8_t tempData[512];
+  for (uint16_t i = 0; i < 512; i++) {
+      tempData[i] = i % 256; // 0-255 arasında döngüsel değerler
+  }
+  uint8_t tempDataRead[512] = {0};
+  uint32_t address = 0;
+  EepromSTM eeprom(&hspi1);
+
+  eepromStatus = eeprom.init();
+
   while (1)
   {
-    
+    if (eepromStatus == 1)
+    {
+       eeprom.write(address, tempData);
 
-    eeprom.write(0x0000, tempArray);
+       HAL_Delay(1000);
 
-    HAL_Delay(10);
-
-    eeprom.read(0x0000, tempArray);
-
-    HAL_Delay(10);
+       eeprom.read(address, tempDataRead);
+    }
   }
   /* USER CODE END 3 */
 }

@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 #include "spi.h"
+#include <cstring>
+
 // EEPROM kimlikleri
 enum EepromRegion {
     REGION_CALIBRATION,
@@ -10,7 +12,14 @@ enum EepromRegion {
     REGION_ENV_PARAMS
 };
 
-typedef unsigned int EeAddr;
+
+typedef enum EepromDriverStatus
+{
+	EEPROM_INIT_FAIL,
+	EEPROM_INITIALIZED
+}e_EepromStatus;
+
+typedef uint32_t EeAddr;
 
 // EEPROM Harita Girişi
 struct EepromMapEntry {
@@ -18,17 +27,17 @@ struct EepromMapEntry {
     EeAddr startAddr;       // EEPROM başlangıç adresi
 };
 
-// Eeprom Sınıfı
+
 class Eeprom {
 public:
     virtual ~Eeprom() {}
     virtual bool erase() { return false; }
-    virtual bool write(EeAddr addr, const void* buf, size_t len) = 0;
+    virtual bool write(EeAddr addr, void* buf, size_t len) = 0;
     virtual bool read(EeAddr addr, void* buf, size_t len) = 0;
 
         // Template methods
     template <typename T>
-    bool write(EeAddr addr, const T& data) {
+    bool write(EeAddr addr,  T& data) {
         return write(addr, &data, sizeof(T));
     }
 
@@ -40,11 +49,11 @@ public:
 
 class EepromSTM : public Eeprom {
 public:
-    EepromSTM();
+    EepromSTM(SPI_HandleTypeDef *spiPyh);
     ~EepromSTM() override;
 
-    bool erase() override;
-    bool write(EeAddr addr, const void* buf, size_t len) override;
+    bool init();
+    bool write(EeAddr addr, void* buf, size_t len) override;
     bool read(EeAddr addr, void* buf, size_t len) override;
 
     // Template metotlar� burada yeniden tan�ml�yoruz
@@ -53,11 +62,16 @@ public:
 
     // Eklenen Metodlar
     bool readEepromRegion(EepromRegion region, void* ramData);
-    bool writeEepromRegion(EepromRegion region, const void* ramData);
+    bool writeEepromRegion(EepromRegion region, void* ramData);
+
 
 private:
+    e_EepromStatus driverState;
     static const EepromMapEntry eepromMap[]; // EEPROM Haritası
-    void writeInstruction(void);
+    SPI_HandleTypeDef *spiPhyUnit;
+    bool writeEnableInstruction();
+    bool validateDevice();
+
 };
 
 #endif
