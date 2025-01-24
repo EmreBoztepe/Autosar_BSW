@@ -21,88 +21,68 @@
 #include "spi.h"
 #include "gpio.h"
 #include "deneme.h"
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
+#define BUFF_SIZE 1024
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
 void Delay (uint32_t time );
 void SystemClock_Config(void);
-/* USER CODE END PV */
 
-/* Private function prototypes -----------------------------------------------*/
 
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-/* USER CODE END 0 */
 void Delay_Dumy (uint32_t time )
 {
 	while(time--); // 8cycle
 }
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
+
+
+
+uint8_t tempDataWrite[BUFF_SIZE] = {0};
+uint8_t tempDataRead[BUFF_SIZE] = {0};
+uint8_t calibRationDataWrite[BUFF_SIZE] = {0};
+uint32_t address = 0;
+bool eepromStatus = false;
+uint8_t eepromTest = 0;
+
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  bool eepromStatus = false;
   HAL_Init();
   SystemClock_Config();
   MX_GPIO_Init();
   MX_SPI1_Init();
 
-  uint8_t tempData[512];
-  for (uint16_t i = 0; i < 512; i++) {
-      tempData[i] = i % 256; // 0-255 arasında döngüsel değerler
-  }
-  uint8_t tempDataRead[512] = {0};
-  uint32_t address = 0;
   EepromSTM eeprom(&hspi1);
+
+  for (uint16_t i = 0; i < BUFF_SIZE; i++) 
+  {
+    tempDataWrite[i] = 0xcc; // 0-255 arasında döngüsel değerler
+  }
+
+  for (uint16_t i = 0; i < BUFF_SIZE; i++) 
+  {
+    calibRationDataWrite[i] = 0xbb; // 0-255 arasında döngüsel değerler
+  }
 
   eepromStatus = eeprom.init();
 
   while (1)
   {
-    if (eepromStatus == 1)
+    if(eepromTest == 1)
     {
-       eeprom.write(address, tempData);
+      if (eepromStatus == 1)
+      {
+        eeprom.write(address, tempDataWrite);
 
-       HAL_Delay(1000);
+        HAL_Delay(1000);
 
-       eeprom.read(address, tempDataRead);
+        eeprom.read(address, tempDataRead);
+
+        HAL_Delay(1000);
+      }
     }
   }
-  /* USER CODE END 3 */
+
 }
 
 
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

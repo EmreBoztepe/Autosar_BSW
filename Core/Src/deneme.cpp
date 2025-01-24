@@ -80,28 +80,48 @@ bool EepromSTM::writeEnableInstruction(){
 
 bool EepromSTM::write(EeAddr addr, void* buf, size_t len) {
     
-		bool retVal = 0;
-		
-		retVal = writeEnableInstruction(); //write enable
+    bool retVal = 0;
 
-	    uint8_t txHeader[4]; // WRITE + 24-bit adres
-	    txHeader[0] = WRITE;
-	    txHeader[1] = static_cast<uint8_t>((addr & 0xFF0000) >> 16); // Adresin üst byte'ı
-	    txHeader[2] = static_cast<uint8_t>((addr & 0x00FF00) >> 8);  // Adresin orta byte'ı
-	    txHeader[3] = static_cast<uint8_t>(addr & 0x0000FF);         // Adresin alt byte'ı
+    uint8_t* data = static_cast<uint8_t*>(buf);
 
-	    // Yazma işlemini başlat
-	    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); // CS'yi aktif et
+    const uint16_t pageSize = 256; // EEPROM'un sayfa boyutu
 
-	    // İlk olarak WRITE komutunu ve adresi gönder
-	    HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);
+    while (len > 0) 
+    {
+        // Mevcut sayfada kalan alanı hesapla
+        uint16_t bytesToWrite = pageSize - (addr % pageSize); // Mevcut sayfada ne kadar yer kaldı
 
-	    // Ardından veriyi gönder
-	    HAL_SPI_Transmit(&hspi1, static_cast<uint8_t*>(buf), len, 1000);
+        if (bytesToWrite > len) 
+        {
+            bytesToWrite = len; // Eğer kalan veri daha küçükse, hepsini gönder
+        }
 
-	    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); // CS'yi deaktif et
+        retVal = writeEnableInstruction(); //write enable
 
+        uint8_t txHeader[4]; // WRITE + 24-bit adres
+        txHeader[0] = WRITE;
+        txHeader[1] = static_cast<uint8_t>((addr & 0xFF0000) >> 16); // Adresin üst byte'ı
+        txHeader[2] = static_cast<uint8_t>((addr & 0x00FF00) >> 8);  // Adresin orta byte'ı
+        txHeader[3] = static_cast<uint8_t>(addr & 0x0000FF);         // Adresin alt byte'ı
 
+        // Yazma işlemini başlat
+        HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); // CS'yi aktif et
+
+        // İlk olarak WRITE komutunu ve adresi gönder
+        HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);
+
+        // Ardından veriyi gönder
+        HAL_SPI_Transmit(&hspi1, data, bytesToWrite, 1000);
+
+        HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); // CS'yi deaktif et
+
+            // Kalan uzunluğu ve adresi güncelle
+        len -= bytesToWrite;  // Kalan veri miktarını azalt
+        addr += bytesToWrite; // Adresi ileri taşı
+        data += bytesToWrite; // Verinin başlangıç konumunu güncelle
+
+        HAL_Delay(4);
+    }
     return retVal;
 }
 
