@@ -24,25 +24,17 @@
 
 #define BUFF_SIZE 256
 
-void Delay (uint32_t time );
 void SystemClock_Config(void);
 
 
-void Delay_Dumy (uint32_t time )
-{
-	while(time--); // 8cycle
-}
-
-
-
-float tempDataWrite[BUFF_SIZE] = {0};
-float tempDataRead[BUFF_SIZE] = {0};
-uint8_t calibRationDataWrite[BUFF_SIZE] = {0};
+uint8_t tempDataWrite[BUFF_SIZE] = {0};
+uint8_t tempDataRead[BUFF_SIZE] = {0};
 uint32_t address = 0;
 bool eepromStatus = false;
 uint8_t eepromTest = 1;
-uint8_t eepromTestStatus = 0;
-
+e_eepromState eepromState;
+uint8_t eepromWriteFlag = 0;
+uint8_t eepromReadFlag = 0;
 int main(void)
 {
   HAL_Init();
@@ -54,50 +46,34 @@ int main(void)
 
   for (uint16_t i = 0; i < BUFF_SIZE; i++) 
   {
-    tempDataWrite[i] = i * 1.1f; // 0-255 arasında döngüsel değerler
-  }
-
-  for (uint16_t i = 0; i < BUFF_SIZE; i++) 
-  {
-    calibRationDataWrite[i] = 0xbb; // 0-255 arasında döngüsel değerler
+    tempDataWrite[i] = 0xaa; // 0-255 arasında döngüsel değerler
   }
 
   eepromStatus = eeprom.init();
 
   while (1)
   {
-    if(eepromTest == 1)
+    if(eepromTest == 1 && eepromStatus == 1)
     {
-      if (eepromStatus == 1)
+      eepromState = eeprom.getEepromState();
+
+      if(eepromState == EEPROM_IDLE && eepromWriteFlag == 0)
       {
-        eeprom.write(address, tempDataWrite);
-
-        HAL_Delay(1000);
-
-        eeprom.read(address, tempDataRead);
-
-        HAL_Delay(1000);
-
-        for(uint16_t i= 0; i<BUFF_SIZE; i++)
-        {
-        	if(tempDataWrite[i] != tempDataRead[i])
-        	{
-        		eepromTestStatus = 1;
-        		break;
-        	}
-        }
-
-        if(eepromTestStatus == 0)
-        {
-        	eepromTest = 0;
-        }
+        eeprom.startWrite(address, tempDataWrite,sizeof(tempDataWrite));
+        eepromWriteFlag = 1;
+      }
+      else if(eepromState == EEPROM_IDLE && eepromWriteFlag == 1 && eepromReadFlag == 0)
+      {
+        eeprom.read(address, tempDataRead, sizeof(tempDataRead));
+        eepromReadFlag = 1;
       }
     }
+    eeprom.eepromMainFunction();
+
+    HAL_Delay(500);
   }
 
 }
-
-
 
 /**
   * @brief  This function is executed in case of error occurrence.

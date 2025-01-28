@@ -12,6 +12,12 @@ enum EepromRegion {
     REGION_ENV_PARAMS
 };
 
+typedef enum EepromState {
+    EEPROM_IDLE,
+    WRITE_ENABLE,
+    SEND_DATA,
+    WAIT_READY
+}e_eepromState;
 
 typedef enum EepromDriverStatus
 {
@@ -34,17 +40,6 @@ public:
     virtual bool erase() { return false; }
     virtual bool write(EeAddr addr, void* buf, size_t len) = 0;
     virtual bool read(EeAddr addr, void* buf, size_t len) = 0;
-
-        // Template methods
-    template <typename T>
-    bool write(EeAddr addr,  T& data) {
-        return write(addr, &data, sizeof(T));
-    }
-
-    template <typename T>
-    bool read(EeAddr addr, T& data) {
-        return read(addr, &data, sizeof(T));
-    }
 };
 
 class EepromSTM : public Eeprom {
@@ -53,24 +48,27 @@ public:
     ~EepromSTM() override;
 
     bool init();
-    bool write(EeAddr addr, void* buf, size_t len) override;
+    e_eepromState getEepromState();
     bool read(EeAddr addr, void* buf, size_t len) override;
-
-    // Template metotlar� burada yeniden tan�ml�yoruz
-    using Eeprom::write;
-    using Eeprom::read;
-
-    // Eklenen Metodlar
-    bool readEepromRegion(EepromRegion region, void* ramData);
-    bool writeEepromRegion(EepromRegion region, void* ramData);
-
+    bool startWrite(EeAddr addr, void* data, size_t len);
+    void eepromMainFunction();
+    
 
 private:
-    e_EepromStatus driverState;
-    static const EepromMapEntry eepromMap[]; // EEPROM Haritası
-    SPI_HandleTypeDef *spiPhyUnit;
     bool writeEnableInstruction();
     bool validateDevice();
+    bool isEepromReady();
+    bool write(EeAddr addr, void* buf, size_t len) override;
+
+    static const EepromMapEntry eepromMap[]; // EEPROM Haritası
+    const uint16_t pageSize = 256; // EEPROM'un sayfa boyutu
+    SPI_HandleTypeDef *spiPhyUnit;
+    uint8_t* currentData = nullptr;
+    e_EepromStatus driverState;
+    e_eepromState currentState;
+    EeAddr currentAddress = 0;
+    size_t remainingLength = 0;
+    size_t bytesToWrite = 0;
 
 };
 

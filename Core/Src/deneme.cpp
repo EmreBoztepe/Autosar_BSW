@@ -25,7 +25,8 @@ const EepromMapEntry EepromSTM::eepromMap[] = {
 
 // EepromSTM Constructor & Destructor
 EepromSTM::EepromSTM(SPI_HandleTypeDef* spiPhy)
-    : spiPhyUnit(spiPhy){driverState=EEPROM_INIT_FAIL; }
+    : spiPhyUnit(spiPhy),currentData(nullptr),driverState(EEPROM_INIT_FAIL),
+    currentState(EEPROM_IDLE),currentAddress(0), remainingLength(0), bytesToWrite(0){}
 
 EepromSTM::~EepromSTM(){}
 
@@ -62,12 +63,12 @@ bool EepromSTM::init()
 	{
 		retVal = validateDevice();
 	}
-
+    
 	return retVal;
 }
 
-bool EepromSTM::writeEnableInstruction(){
-    
+bool EepromSTM::writeEnableInstruction()
+{
     uint8_t txData = WREN;
     bool retVal = 0;
 
@@ -78,70 +79,45 @@ bool EepromSTM::writeEnableInstruction(){
     return retVal;
 }
 
-bool EepromSTM::write(EeAddr addr, void* buf, size_t len) {
-    
+bool EepromSTM::write(EeAddr addr, void* buf, size_t len)
+{
     bool retVal = 0;
 
     uint8_t* data = static_cast<uint8_t*>(buf);
 
-    const uint16_t pageSize = 256; // EEPROM'un sayfa boyutu
+    retVal = writeEnableInstruction(); //write enable
 
-    while (len > 0) 
-    {
-        // Mevcut sayfada kalan alanı hesapla
-        uint16_t bytesToWrite = pageSize - (addr % pageSize); // Mevcut sayfada ne kadar yer kaldı
+    uint8_t txHeader[4]; // WRITE + 24-bit adres
+    txHeader[0] = WRITE;
+    txHeader[1] = static_cast<uint8_t>((addr & 0xFF0000) >> 16); // Adresin üst byte'ı
+    txHeader[2] = static_cast<uint8_t>((addr & 0x00FF00) >> 8);  // Adresin orta byte'ı
+    txHeader[3] = static_cast<uint8_t>(addr & 0x0000FF);         // Adresin alt byte'ı
 
-        if (bytesToWrite > len) 
-        {
-            bytesToWrite = len; // Eğer kalan veri daha küçükse, hepsini gönder
-        }
+    // Yazma işlemini başlat
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); // CS'yi aktif et
 
-        retVal = writeEnableInstruction(); //write enable
+    HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);// İlk olarak WRITE komutunu ve adresi gönder
+    
+    HAL_SPI_Transmit(&hspi1, data, len, 1000);// Ardından veriyi gönder
 
-        uint8_t txHeader[4]; // WRITE + 24-bit adres
-        txHeader[0] = WRITE;
-        txHeader[1] = static_cast<uint8_t>((addr & 0xFF0000) >> 16); // Adresin üst byte'ı
-        txHeader[2] = static_cast<uint8_t>((addr & 0x00FF00) >> 8);  // Adresin orta byte'ı
-        txHeader[3] = static_cast<uint8_t>(addr & 0x0000FF);         // Adresin alt byte'ı
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); // CS'yi deaktif et
 
-        // Yazma işlemini başlat
-        HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); // CS'yi aktif et
-
-        // İlk olarak WRITE komutunu ve adresi gönder
-        HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);
-
-        // Ardından veriyi gönder
-        HAL_SPI_Transmit(&hspi1, data, bytesToWrite, 1000);
-
-        HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); // CS'yi deaktif et
-
-            // Kalan uzunluğu ve adresi güncelle
-        len -= bytesToWrite;  // Kalan veri miktarını azalt
-        addr += bytesToWrite; // Adresi ileri taşı
-        data += bytesToWrite; // Verinin başlangıç konumunu güncelle
-
-        HAL_Delay(4);
-    }
     return retVal;
 }
 
-bool EepromSTM::read(EeAddr addr, void* buf, size_t len) {
-    // READ komutunu ve adresi hazırlayın
+bool EepromSTM::read(EeAddr addr, void* buf, size_t len)
+{
     uint8_t txHeader[4];
     txHeader[0] = 0x03; // READ komut kodu
     txHeader[1] = static_cast<uint8_t>((addr & 0xFF0000) >> 16); // Üst byte
     txHeader[2] = static_cast<uint8_t>((addr & 0x00FF00) >> 8);  // Orta byte
     txHeader[3] = static_cast<uint8_t>(addr & 0x0000FF);         // Alt byte
 
-    // SPI ile gönderim ve okuma işlemi
     HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); // CS'yi aktif et
 
-    // READ komutu ve adresi gönder
-    HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);
-
-    // Veriyi oku
-    HAL_SPI_Receive(&hspi1, static_cast<uint8_t*>(buf), len, 1000);
-
+    HAL_SPI_Transmit(&hspi1, txHeader, sizeof(txHeader), 1000);// READ komutu ve adresi gönder
+    
+    HAL_SPI_Receive(&hspi1, static_cast<uint8_t*>(buf), len, 1000);// Veriyi oku
 
     HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); // CS'yi pasif et
 
@@ -149,26 +125,85 @@ bool EepromSTM::read(EeAddr addr, void* buf, size_t len) {
 }
 
 
-// Bölgeye Göre EEPROM'dan Okuma
-bool EepromSTM::readEepromRegion(EepromRegion region, void* ramData) {
-    // Haritayı tara ve bölgeyi bul
-    for (const auto& entry : eepromMap) {
-        if (entry.regionId == region) {
-            // EEPROM'dan RAM'e oku
-            return read(entry.startAddr, ramData); 
-        }
-    }
-    return false; // Bölge bulunamadı
+bool EepromSTM::isEepromReady()
+{
+    uint8_t txData = RDSR;
+    uint8_t rxData = 0;
+
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_Transmit(spiPhyUnit, &txData, 1, 1000);
+    HAL_SPI_Receive(spiPhyUnit, &rxData, 1, 1000);
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+
+    return !(rxData & 0x01); // Yazma işlemi tamamlanmışsa hazırdır
 }
 
-// Bölgeye Göre EEPROM'a Yazma
-bool EepromSTM::writeEepromRegion(EepromRegion region, void* ramData) {
-    // Haritayı tara ve bölgeyi bul
-    for (const auto& entry : eepromMap) {
-        if (entry.regionId == region) {
-            // RAM'deki veriyi EEPROM'a yaz
-            return write(entry.startAddr, ramData); //burası muhtemelen gelen
+void EepromSTM::eepromMainFunction() {
+    switch (currentState) {
+        case EEPROM_IDLE:
+            // İşlem bekleniyor, herhangi bir yazma isteği yok
+            break;
+
+        case WRITE_ENABLE:
+            if (writeEnableInstruction() == HAL_OK)
+            {
+                currentState = SEND_DATA;
+            }
+            break;
+
+        case SEND_DATA:
+        {
+            bytesToWrite = pageSize - (currentAddress % pageSize);
+            if (bytesToWrite > remainingLength) {
+                bytesToWrite = remainingLength;
+            }
+
+            if (write(currentAddress, currentData, bytesToWrite) == HAL_OK)
+            {
+                remainingLength -= bytesToWrite;
+                currentAddress += bytesToWrite;
+                currentData += bytesToWrite;
+
+                if (remainingLength == 0)
+                {
+                    currentState = WAIT_READY;
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                currentState = EEPROM_IDLE;
+            }
+            break;
         }
+
+        case WAIT_READY:
+
+             currentState = EEPROM_IDLE;
+
+            break;
     }
-    return false; // Bölge bulunamadı
+}
+
+bool EepromSTM::startWrite(EeAddr addr, void* data, size_t len)
+{
+    if (currentState != EEPROM_IDLE)
+    {
+        return false;
+    }
+
+    currentAddress = addr;
+    currentData = static_cast<uint8_t*>(data);
+    remainingLength = len;
+    currentState = WRITE_ENABLE;
+
+    return true;
+}
+
+e_eepromState EepromSTM::getEepromState()
+{
+    return currentState;
 }
