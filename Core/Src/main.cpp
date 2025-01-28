@@ -22,7 +22,7 @@
 #include "gpio.h"
 #include "deneme.h"
 
-#define BUFF_SIZE 1024
+#define BUFF_SIZE 256
 
 void Delay (uint32_t time );
 void SystemClock_Config(void);
@@ -35,12 +35,13 @@ void Delay_Dumy (uint32_t time )
 
 
 
-uint8_t tempDataWrite[BUFF_SIZE] = {0};
-uint8_t tempDataRead[BUFF_SIZE] = {0};
+float tempDataWrite[BUFF_SIZE] = {0};
+float tempDataRead[BUFF_SIZE] = {0};
 uint8_t calibRationDataWrite[BUFF_SIZE] = {0};
 uint32_t address = 0;
 bool eepromStatus = false;
-uint8_t eepromTest = 0;
+uint8_t eepromTest = 1;
+uint8_t eepromTestStatus = 0;
 
 int main(void)
 {
@@ -53,7 +54,7 @@ int main(void)
 
   for (uint16_t i = 0; i < BUFF_SIZE; i++) 
   {
-    tempDataWrite[i] = 0xcc; // 0-255 arasında döngüsel değerler
+    tempDataWrite[i] = i * 1.1f; // 0-255 arasında döngüsel değerler
   }
 
   for (uint16_t i = 0; i < BUFF_SIZE; i++) 
@@ -76,6 +77,20 @@ int main(void)
         eeprom.read(address, tempDataRead);
 
         HAL_Delay(1000);
+
+        for(uint16_t i= 0; i<BUFF_SIZE; i++)
+        {
+        	if(tempDataWrite[i] != tempDataRead[i])
+        	{
+        		eepromTestStatus = 1;
+        		break;
+        	}
+        }
+
+        if(eepromTestStatus == 0)
+        {
+        	eepromTest = 0;
+        }
       }
     }
   }
